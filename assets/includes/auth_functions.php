@@ -58,7 +58,7 @@ function check_verified() {
             return true;
         }
         elseif ($_SESSION['auth'] == 'loggedin') {
-            header("Location: ../profile-edit/");
+            header("Location: ../profile/");
             exit(); 
         }
     }

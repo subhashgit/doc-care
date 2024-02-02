@@ -62,9 +62,11 @@ include '../assets/landing_page/header.php';
                 <div class="form-group">
                     <label for="role" class="sr-only">Select Role</label>
                     <select name="role" id="role" class="form-control" >
-                        <option value="user">User(Patient or Donor)</option>
+                        <option value="User">User</option>
+                        <option value="Hospital">Hospital</option>
                         <option value="Clinic">Clinic</option>
                         <option value="Lab">Lab</option>
+
                     </select>
                     
                 </div>

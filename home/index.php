@@ -1,8 +1,10 @@
 <?php
 
 define('TITLE', "Home");
-include '../assets/layouts/header.php';
+include '../assets/layouts/head_func.php';
 check_verified();
+include '../assets/layouts/header.php';
+
 
 ?>
 
