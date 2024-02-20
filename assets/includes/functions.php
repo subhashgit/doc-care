@@ -26,7 +26,7 @@ else{
 }
 /**Doctors */
 
-$sqlDoc = "SELECT * FROM doctors WHERE parent = ".$_SESSION['id']; 
+$sqlDoc = "SELECT * FROM doctors WHERE parent = ".$_SESSION['id']." ORDER BY id DESC"; 
 if ($resultDoc = mysqli_query($conn, $sqlDoc))
 {
     $resultArrayDoc = array();
@@ -66,7 +66,6 @@ if ($resultAvail = mysqli_query($conn, $sqlavail))
     }
 
     // Finally, encode the array to JSON and output the results
-  
 }
 if(!empty($resultArrayAvail)){
 $Available = $resultArrayAvail[0];
@@ -108,12 +107,27 @@ if ($resultspc = mysqli_query($conn, $sqlspc))
     $tempArraySpc = array();
 
     // Loop through each row in the result set
-    while($row = $resultspc->fetch_object())
+    while($rowSpc  = $resultspc->fetch_object())
     {
         // Add each row into our results array
-        $tempArraySpc = $row;
+        $tempArraySpc = $rowSpc;
         array_push($resultArraySpc, $tempArraySpc);
     }
-
+    $Specialists = $resultArraySpc;
     // Finally, encode the array to JSON and output the results
+}
+
+/**Specific Doc */
+function specificdoctor($docid){
+
+    require '../assets/setup/db.inc.php';
+    
+    $sqlDoc = "SELECT * FROM doctors WHERE parent = '".$_SESSION['id']."' AND id= ".$docid; 
+        if ($resultDoc = mysqli_query($conn, $sqlDoc))
+        {
+            $doc_specific  = $resultDoc->fetch_object();
+             return $doc_specific;
+        
+        }
+
 }

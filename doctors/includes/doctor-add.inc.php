@@ -3,25 +3,8 @@ session_start();
 require '../../assets/includes/security_functions.php';
 require '../../assets/includes/auth_functions.php';
 check_verified();
-if (isset($_POST['update-doctor'])) {
-    require '../../assets/setup/db.inc.php';
-    if(isset($_POST['doc_id'])){
+if (isset($_POST['add-doctor'])) {
 
-        $sqlDoc = "SELECT * FROM doctors WHERE parent = '".$_SESSION['id']."' AND id= ".$_POST['doc_id']; 
-        $resultDoc = mysqli_query($conn, $sqlDoc);
-        
-            if(mysqli_num_rows($resultDoc) === 1){
-                $docdetail  = $resultDoc->fetch_object();
-                    $docid = $_POST['doc_id'];
-            }
-            else{
-                header("Location: ../");
-            }
-        }
-    else{
-        header("Location: ../");
-       
-    }
       // foreach($_POST as $key => $value){
 
        //     $_POST[$key] = _cleaninjections(trim($value));
@@ -30,10 +13,10 @@ if (isset($_POST['update-doctor'])) {
     
     if (!verify_csrf_token()){
         $_SESSION['STATUS']['editstatus'] = 'Request could not be validated';
-        header("Location: ../edit?id=".$docid);
+        header("Location: ../add");
         exit();
     }
-
+    require '../../assets/setup/db.inc.php';
     require '../../assets/includes/datacheck.php';
         $id = $_SESSION['id'];
         $full_name = mysqli_real_escape_string($conn, $_POST['full_name']);
@@ -54,11 +37,16 @@ if (isset($_POST['update-doctor'])) {
     else{
         $gender = null;
     }    
- 
+    if(isset($_POST['doc_id'])){
+        $docid = $_POST['doc_id'];
+    }
+    else{
+        $docid = 0;
+    }
     if (empty($full_name) || empty($number) ) {
         $_SESSION['ERRORS']['editstatus'] = 'required fields cannot be empty, try again';
     
-        header("Location: ../edit?id=".$docid);
+        header("Location: ../add");
         exit();
     }
     else {
@@ -85,29 +73,29 @@ if (isset($_POST['update-doctor'])) {
                     else
                     {
                         $_SESSION['ERRORS']['imageerror'] = 'image size should be less than 10MB';
-                        header("Location: ../edit?id=".$docid);
+                        header("Location: ../add");
                         exit(); 
                     }
                 }
                 else
                 {
                     $_SESSION['ERRORS']['imageerror'] = 'image upload failed, try again';
-                    header("Location: ../edit?id=".$docid);
+                    header("Location: ../add");
                     exit();
                 }
             }
             else
             {
                 $_SESSION['ERRORS']['imageerror'] = 'invalid image type, try again';
-                header("Location: ../edit?id=".$docid);
+                header("Location: ../add");
                 exit();
             }
         }
         else{
-            $FileNameNew =  $docdetail->doc_profile;
+            $FileNameNew =  null;
         }
         /** Certificate */
-       
+
 
 
 
@@ -140,35 +128,32 @@ if (isset($_POST['update-doctor'])) {
                     else
                     {
                         $_SESSION['ERRORS']['imageerror'] = 'image size should be less than 10MB';
-                        header("Location: ../edit?id=".$docid);
+                        header("Location: ../add");
                         exit(); 
                     }
                 }
                 else
                 {
                     $_SESSION['ERRORS']['imageerror'] = 'image upload failed, try again';
-                    header("Location: ../edit?id=".$docid);
+                    header("Location: ../add");
                     exit();
                 }
             }
             else
             {
                 $_SESSION['ERRORS']['imageerror'] = 'invalid image type, try again';
-                header("Location: ../edit?id=".$docid);
+                header("Location: ../add");
                 exit();
             }
         }
         else{
-            $certifyNameNew =  $docdetail->doc_document;
+            $certifyNameNew = null;
         }
 
+     
+        $sql = "INSERT INTO doctors  (parent, doc_name, doc_number, doc_profile,  doc_document, doc_gender, doc_bio, specialist)
+        VALUES ('$id', '$full_name', '$number','$FileNameNew',   '$certifyNameNew' , '$gender', '$bio', '$specialist')";
        
-        $sql = "UPDATE doctors SET  doc_name = '$full_name', doc_number = '$number', doc_profile = '$FileNameNew', doc_document = '$certifyNameNew', doc_gender = '$gender', doc_bio= '$bio', specialist = '$specialist' WHERE parent = '".$_SESSION['id']."' AND id= ".$_POST['doc_id'];                  
-   
-
-
-
-
            if ($conn->query($sql) === TRUE) {
             $_SESSION['STATUS']['editstatus'] = 'Profile Updated Successfully';
            header("Location: ../");

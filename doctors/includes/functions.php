@@ -1,5 +1,5 @@
 <?php
-check_logged_in();
+check_verified();
 $sqlq = "SELECT * FROM doctors WHERE parent = ".$_SESSION['id']; 
 if ($result = mysqli_query($conn, $sqlq))
 {

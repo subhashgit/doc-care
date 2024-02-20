@@ -1,7 +1,7 @@
 <?php
 define('TITLE', "Doctors");
 include '../assets/layouts/head_func.php';
-check_logged_in();
+check_verified();
 include '../assets/layouts/header.php';
 ?>
 <main id="main" class="main">
@@ -25,16 +25,25 @@ include '../assets/layouts/header.php';
         <div class="col-md-4">
         <div class="card mb-3">
             <div class="row g-0">
+              
               <div class="col-md-4">
-                <img src="<?php echo $Doctor->doc_profile; ?>" class="img-fluid rounded-start" alt="...">
+                <img src="<?php if(!empty($Doctor->doc_profile)){ ?>uploads/profile/<?php echo $Doctor->doc_profile; } else { ?> ../assets/uploads/default_user.png <?php } ?>" class="img-fluid rounded-start" alt="...">
               </div>
+              
               <div class="col-md-8">
                 <div class="card-body">
                   <h5 class="card-title"><?php echo $Doctor->doc_name; ?></h5>
                   <p class="card-text"><?php echo $Doctor->doc_bio; ?></p>
+                  
                 </div>
               </div>
-            </div>
+
+              <div class="btn-group mt-2" role="group" aria-label="Basic mixed styles example">
+                <a href="edit?id=<?php echo $Doctor->id; ?>" class="btn btn-success">Edit</a> 
+                <a href="delete?id=<?php echo $Doctor->id; ?>" class="btn btn-danger">Delete</a>
+              </div>
+
+                        </div>
           </div>
         </div>
        <?php } 

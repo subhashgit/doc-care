@@ -1,6 +1,8 @@
 <!-- ======= Sidebar ======= -->
 <aside id="sidebar" class="sidebar">
-
+<?php $activePage = basename($_SERVER['PHP_SELF'], ".php"); 
+echo $activePage;
+?>
 <ul class="sidebar-nav" id="sidebar-nav">
 
   <li class="nav-item">
@@ -9,11 +11,11 @@
       <span>Dashboard</span>
     </a>
   </li><!-- End Dashboard Nav -->
-  <li class="nav-item">
-    <a class="nav-link collapsed" data-bs-target="#doctors" data-bs-toggle="collapse" href="#">
+  <li class="nav-item ">
+    <a class="nav-link collapsed active" data-bs-target="#doctors" data-bs-toggle="collapse" href="#">
       <i class="bi bi-menu-button-wide"></i><span>Doctors</span><i class="bi bi-chevron-down ms-auto"></i>
     </a>
-    <ul id="doctors" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+    <ul id="doctors" class="nav-content collapse show" data-bs-parent="#sidebar-nav">
     <li>
         <a href="../doctors">
           <i class="bi bi-circle"></i><span>Doctors List</span>

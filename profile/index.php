@@ -243,7 +243,7 @@ if (isset($_GET["profile"]))
                 
                 <label for="certificate" class="col-md-4 col-lg-3 col-form-label"> Upload <?php echo $_SESSION['role'] ?> Licence</label>
                 <div class="col-md-8 col-lg-9">
-                    <input type="file" id="certificate" name="certificate" required>
+                    <input type="file" id="certificate" name="certificate" class="form-control" required>
                     <div class="">
                       <?php if(!empty($user->certificate)) {echo '<a target="_blank" href="../assets/uploads/'.$user->certificate.'">View Old Certificate</a>';}; ?>
                     </div>

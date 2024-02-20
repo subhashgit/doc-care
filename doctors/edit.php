@@ -1,24 +1,34 @@
 <?php
 define('TITLE', "Edit Profile");
 include '../assets/layouts/head_func.php';
-check_logged_in();
+$docdetail = specificdoctor($_GET['id']); 
+if(EMPTY($docdetail)){
+  header("Location: ../doctors");
+}
+check_verified();
 include '../assets/layouts/header.php';
+
 ?>
 <main id="main" class="main">
 
+
 <div class="pagetitle">
-  <h1>Add Doctor</h1>
+  <h1>Edit Doctor( <?php echo $docdetail->doc_name; ?>)</h1>
   <nav>
     <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-      <li class="breadcrumb-item active">Add new doctor</li>
+      <li class="breadcrumb-item"><a href="/home">Home</a></li>
+      <li class="breadcrumb-item active">Edit</li>
     </ol>
   </nav>
 </div><!-- End Page Title -->
-  
 
 
+<section class="section dashboard">
+<div class="row">
+    <div class="col-md-12">
 
+    <div class="card">
+            <div class="card-body pt-3">
 
 <form class="needs-validation" action="includes/doctor-edit.inc.php" enctype="multipart/form-data" method="post" novalidate  autocomplete="off">
                     <?php insert_csrf_token(); ?>
@@ -27,7 +37,6 @@ include '../assets/layouts/header.php';
                             <?php
                                 if (isset($_SESSION['ERRORS']['sqlerror']))
                                     echo $_SESSION['ERRORS']['sqlerror'];
-
                             ?>
                         </sub>
                     </div>
@@ -50,9 +59,10 @@ include '../assets/layouts/header.php';
                         </sub>
                     </div>
                     <div class="row mb-3">
+                      <input type="hidden" name="doc_id" value="<?php echo $_GET['id']; ?>">
                       <label for="profileImage" class="col-md-4 col-lg-3 col-form-label">Profile Image</label>
                       <div class="col-md-8 col-lg-9">
-                        <img src="<?php if (!empty($user->profile_pic)){ echo '../assets/uploads/users/'.$user->profile_pic;} else{echo '../assets/uploads/default_user.png'; }?>" id="imagePreview" width="150"  alt="Profile">
+                        <img src="<?php  if(!empty($docdetail->doc_profile)){ ?>uploads/profile/<?php echo $docdetail->doc_profile; } else{echo '../assets/uploads/default_user.png'; }?>" id="imagePreview" width="150"  alt="Profile">
                         <div class="pt-2">
                         <input name='avatar'  class="d-none avatar " type='file' />
                           <a href="#" class="btn btn-primary btn-sm" id="avatar" title="Upload new profile image"><i class="bi bi-upload"></i></a>
@@ -64,59 +74,74 @@ include '../assets/layouts/header.php';
                     <div class="row mb-3">
                       <label for="fullName" class="col-md-4 col-lg-3 col-form-label">Full Name</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="full_name" type="text" class="form-control" id="fullName"  value="<?php if(!empty($user->full_name)) {echo $user->full_name;}?>" required>
+                        <input name="full_name" type="text" class="form-control" id="fullName"  value="<?php if(!empty($docdetail->doc_name)) {echo $docdetail->doc_name;}?>" required>
                       </div>
                     </div>
                     <div class="row mb-3">
                       <label for="number" class="col-md-4 col-lg-3 col-form-label">Phone Number</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="number" type="text" class="form-control" id="number" value="<?php if(!empty($user->number)) {echo $user->number;}?>" required>
+                        <input name="number" type="text" class="form-control" id="number" value="<?php if(!empty($docdetail->doc_number)) {echo $docdetail->doc_number;}?>" required>
                       </div>
                     </div>
-
+                    <div class="row mb-3">
+                      <label for="number" class="col-md-4 col-lg-3 col-form-label">Specilist</label>
+                      <div class="col-md-8 col-lg-9">
+                      <?php $datas=explode("," , $docdetail->specialist); 
+                      
+                     
+                      ?>
+                      <select class="form-select" multiple="true" name="specialist[]" required >
+                      <option selected="" value="">Select Specilities</option>
+                     
+                        <?php foreach($Specialists as $Specialist) {  ?>
+                              <option value="<?php echo $Specialist->name; ?>"<?php  foreach($datas as $data) { if($data == $Specialist->name) echo 'selected'; } ?> ><?php echo $Specialist->name; ?></option>
+                          <?php } ?>
+                    </select>
+                      </div>
+                    </div>
                     
-                    <div class="row mb-3">               
-                        <label for="certificate" class="col-md-4 col-lg-3 col-form-label"> Upload Document</label>
-                        <div class="col-md-8 col-lg-9">
-                            <input type="file" id="certificate" name="certificate" required>
-                            <div class="">
-                            <?php if(!empty($user->certificate)) {echo '<a target="_blank" href="../assets/uploads/'.$user->certificate.'">View Old Certificate</a>';}; ?>
-                            </div>
-                    </div>           
+                          
        
        
-        
+        <div class="row mb-3">
              <label for="certificate" class="col-md-4 col-lg-3 col-form-label">Gender</label>
                 <div class="col-md-8 col-lg-9">
                     <div class="custom-control custom-radio custom-control">
-                        <input type="radio" id="male" name="gender" class="custom-control-input" value="m" <?php if(!empty($user->gender) && $user->gender == 'm') {echo 'checked';}?> >
+                        <input type="radio" id="male" name="gender" class="custom-control-input" value="m" <?php if(!empty($docdetail->doc_gender) && $docdetail->doc_gender == 'm') {echo 'checked';}?> >
                         <label class="custom-control-label" for="male">Male</label>
                     </div>
                     <div class="custom-control custom-radio custom-control">
-                        <input type="radio" id="female" name="gender" class="custom-control-input" value="f"  <?php if(!empty($user->gender) && $user->gender == 'f') {echo 'checked';}?>>
+                        <input type="radio" id="female" name="gender" class="custom-control-input" value="f"  <?php if(!empty($docdetail->doc_gender) && $docdetail->doc_gender == 'f') {echo 'checked';}?>>
                         <label class="custom-control-label" for="female">Female</label>
                     </div>
                     <div class="custom-control custom-radio custom-control">
-                        <input type="radio" id="other" name="gender" class="custom-control-input" value="o" <?php if(!empty($user->gender) && $user->gender == 'o') {echo 'checked';}?>>
+                        <input type="radio" id="other" name="gender" class="custom-control-input" value="o" <?php if(!empty($docdetail->doc_gender) && $docdetail->doc_gender == 'o') {echo 'checked';}?>>
                         <label class="custom-control-label" for="female">Other</label>
                     </div>
                 </div> 
-
+                        </div>
         
 
-
+                <div class="row mb-3">               
+                        <label for="certificate" class="col-md-4 col-lg-3 col-form-label"> Upload Document</label>
+                        <div class="col-md-8 col-lg-9">
+                            <input type="file" id="certificate" name="certificate" >
+                            <div class="">
+                            <?php if(!empty($docdetail->doc_document)) {echo '<a target="_blank" href="uploads/certificate/'.$docdetail->doc_document.'">View Old Certificate</a>';}; ?>
+                            </div>
+                    </div>   
 
 
 
                     <div class="row mb-3">
                       <label for="bio" class="col-md-4 col-lg-3 col-form-label">About</label>
                       <div class="col-md-8 col-lg-9">
-                        <textarea name="bio" class="form-control" id="bio" style="height: 100px"><?php if(!empty($user->bio)) {echo $user->bio;}?></textarea>
+                        <textarea name="bio" class="form-control" id="bio" style="height: 100px"><?php if(!empty($docdetail->doc_bio)) {echo $docdetail->doc_bio;}?></textarea>
                       </div>
                     </div>
   
        
- <button class="btn btn-lg btn-primary btn-block mb-5  mt-5" type="submit" name='update-profile'>Save</button>
+ <button class="btn btn-lg btn-primary btn-block mb-5  mt-5" type="submit" name='update-doctor'>Update</button>
         </form>
                 
              
@@ -125,7 +150,7 @@ include '../assets/layouts/header.php';
        
     </div>
 </div>
-
+</section>
 </main>
 
 <?php
@@ -140,7 +165,8 @@ include '../assets/layouts/footer.php';
         if (input.files && input.files[0]) {
             var reader = new FileReader();
             reader.onload = function(e) {
-                $('#imagePreview').css('background-image', 'url(' + e.target.result + ')');
+           
+                $('#imagePreview').attr('src', e.target.result );
                 $('#imagePreview').hide();
                 $('#imagePreview').fadeIn(650);
 
@@ -148,10 +174,21 @@ include '../assets/layouts/footer.php';
             reader.readAsDataURL(input.files[0]);
         }
     }
-
-    $("#avatar").change(function() {
-        console.log("here");
-        readURL(this);
+    $("#avatar").click(function() {  
+    $(".avatar").click();
+ 
     });
+
+    $('.avatar').change(function(){
+      
+    readURL(this);
+  });
+
+  $('#remove_avatar').click(function(){
+    $('.avatar').val('');
+    $('#imagePreview').attr('src','../assets/uploads/default_user.png');
+    readURL(this);
+  });
+
 </script>
 
