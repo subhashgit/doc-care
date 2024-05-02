@@ -1,16 +1,31 @@
 <?php
 
 define('TITLE', "Contact Us");
+include '../assets/layouts/head_func.php';
+check_verified();
 include '../assets/layouts/header.php';
-
 ?>
 
+<main id="main" class="main">
 
-<main role="main" class="container">
+<div class="pagetitle">
+  <h1>Add Staff</h1>
+  <nav>
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+      <li class="breadcrumb-item active">Add new Staff</li>
+    </ol>
+  </nav>
+</div><!-- End Page Title -->
+  
 
-    <div class="row">
-       
-        <div class="col-sm-12 px-5">
+<section class="section dashboard">
+<div class="row">
+    <div class="col-md-12">
+
+    <div class="card">
+            <div class="card-body pt-3">
+
 
             <form class="form-auth" action="includes/contact.inc.php" method="post">
 
@@ -61,12 +76,16 @@ include '../assets/layouts/header.php';
                 
             </form>
 
+                 
+            </div>
         </div>
-    </div>
+        </div>
+        </div>
+</section>
+
+        
+
 </main>
-
-
-
 
 <?php
 

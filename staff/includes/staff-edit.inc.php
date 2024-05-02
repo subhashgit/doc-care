@@ -3,8 +3,25 @@ session_start();
 require '../../assets/includes/security_functions.php';
 require '../../assets/includes/auth_functions.php';
 check_verified();
-if (isset($_POST['add-doctor'])) {
+if (isset($_POST['update-staff'])) {
+    require '../../assets/setup/db.inc.php';
+    if(isset($_POST['staff_id'])){
 
+        $sqlstaff = "SELECT * FROM staff WHERE parent = '".$_SESSION['id']."' AND id= ".$_POST['staff_id']; 
+        $resultstaff = mysqli_query($conn, $sqlstaff);
+        
+            if(mysqli_num_rows($resultstaff) === 1){
+                $staffdetail  = $resultstaff->fetch_object();
+                    $staffid = $_POST['staff_id'];
+            }
+            else{
+                header("Location: ../");
+            }
+        }
+    else{
+        header("Location: ../");
+       
+    }
       // foreach($_POST as $key => $value){
 
        //     $_POST[$key] = _cleaninjections(trim($value));
@@ -13,24 +30,17 @@ if (isset($_POST['add-doctor'])) {
     
     if (!verify_csrf_token()){
         $_SESSION['STATUS']['editstatus'] = 'Request could not be validated';
-        header("Location: ../add");
+        header("Location: ../edit?id=".$staffid);
         exit();
     }
-    require '../../assets/setup/db.inc.php';
+
     require '../../assets/includes/datacheck.php';
         $id = $_SESSION['id'];
         $full_name = mysqli_real_escape_string($conn, $_POST['full_name']);
         $number = mysqli_real_escape_string($conn, $_POST['number']);
         $bio = mysqli_real_escape_string($conn, $_POST['bio']);
-        date_default_timezone_set("Asia/Calcutta");   //India time (GMT+5:30)
-        $created_at = date('Y-m-d H:i:s');
-        if(is_array($_POST["specialist"])) {
-            $specialist = implode(",", $_POST["specialist"]);
-        }
-        else
-        {
-            $specialist = $_POST["specialist"];
-        }
+        $role = $_POST["role"];
+        
 
     if(isset($_POST['gender']))
     {
@@ -39,16 +49,11 @@ if (isset($_POST['add-doctor'])) {
     else{
         $gender = null;
     }    
-    if(isset($_POST['doc_id'])){
-        $docid = $_POST['doc_id'];
-    }
-    else{
-        $docid = 0;
-    }
+ 
     if (empty($full_name) || empty($number) ) {
         $_SESSION['ERRORS']['editstatus'] = 'required fields cannot be empty, try again';
     
-        header("Location: ../add");
+        header("Location: ../edit?id=".$staffid);
         exit();
     }
     else {
@@ -75,29 +80,29 @@ if (isset($_POST['add-doctor'])) {
                     else
                     {
                         $_SESSION['ERRORS']['imageerror'] = 'image size should be less than 10MB';
-                        header("Location: ../add");
+                        header("Location: ../edit?id=".$staffid);
                         exit(); 
                     }
                 }
                 else
                 {
                     $_SESSION['ERRORS']['imageerror'] = 'image upload failed, try again';
-                    header("Location: ../add");
+                    header("Location: ../edit?id=".$staffid);
                     exit();
                 }
             }
             else
             {
                 $_SESSION['ERRORS']['imageerror'] = 'invalid image type, try again';
-                header("Location: ../add");
+                header("Location: ../edit?id=".$staffid);
                 exit();
             }
         }
         else{
-            $FileNameNew =  null;
+            $FileNameNew =  $staffdetail->staff_profile;
         }
         /** Certificate */
-
+       
 
 
 
@@ -130,32 +135,35 @@ if (isset($_POST['add-doctor'])) {
                     else
                     {
                         $_SESSION['ERRORS']['imageerror'] = 'image size should be less than 10MB';
-                        header("Location: ../add");
+                        header("Location: ../edit?id=".$staffid);
                         exit(); 
                     }
                 }
                 else
                 {
                     $_SESSION['ERRORS']['imageerror'] = 'image upload failed, try again';
-                    header("Location: ../add");
+                    header("Location: ../edit?id=".$staffid);
                     exit();
                 }
             }
             else
             {
                 $_SESSION['ERRORS']['imageerror'] = 'invalid image type, try again';
-                header("Location: ../add");
+                header("Location: ../edit?id=".$staffid);
                 exit();
             }
         }
         else{
-            $certifyNameNew = null;
+            $certifyNameNew =  $staffdetail->staff_document;
         }
 
-     
-        $sql = "INSERT INTO doctors  (parent, doc_name, doc_number, doc_profile,  doc_document, doc_gender, doc_bio, specialist, created_at)
-        VALUES ('$id', '$full_name', '$number','$FileNameNew',   '$certifyNameNew' , '$gender', '$bio', '$specialist', '$created_at')";
        
+        $sql = "UPDATE staff SET  staff_name = '$full_name', staff_number = '$number', staff_profile = '$FileNameNew', staff_document = '$certifyNameNew', staff_gender = '$gender', staff_bio= '$bio', role = '$role' WHERE parent = '".$_SESSION['id']."' AND id= ".$_POST['staff_id'];                  
+   
+
+
+
+
            if ($conn->query($sql) === TRUE) {
             $_SESSION['STATUS']['editstatus'] = 'Profile Updated Successfully';
            header("Location: ../");
@@ -178,6 +186,6 @@ if (isset($_POST['add-doctor'])) {
 
 else {
 
-    header("Location: ../add");
+    header("Location: ../");
     exit();
 }

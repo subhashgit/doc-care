@@ -5,6 +5,7 @@ include 'includes/functions.php';
 check_verified();
 include '../assets/layouts/header.php';
 ?>
+<link href="../assets/vendors/simple-datatables/style.css" rel="stylesheet">
 <main id="main" class="main">
 <div class="pagetitle">
   <h1><?php echo TITLE;?></h1>
@@ -15,48 +16,56 @@ include '../assets/layouts/header.php';
     </ol>
   </nav>
 </div><!-- End Page Title -->
-<?php  if (isset($_SESSION['STATUS']['deletestatus']))  { ?>
+
+
+    <div class="row">
+    <?php  if (isset($_SESSION['STATUS']['deletestatus']))  { ?>
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
           <?php echo   $_SESSION['STATUS']['deletestatus']; ?>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
               </div>
 <?php } ?>
-
-    <div class="row">
-        <?php if(empty($Doctors)){ ?>
-          <div class="col-md-12 btn-primary p-3 text-center">Doctors list is empty</div>
+        <?php if(empty($staff)){ ?>
+          <div class="col-md-12 btn-primary p-3 text-center">Staff list is empty</div>
        <?php } else { 
-        foreach($Doctors as $Doctor){
         ?>
-        <div class="col-md-4">
-        <div class="card mb-3">
-            <div class="row g-0">
-              
-              <div class="col-md-4">
-                <img src="<?php if(!empty($Doctor->doc_profile)){ ?>uploads/profile/<?php echo $Doctor->doc_profile; } else { ?> ../assets/uploads/default_user.png <?php } ?>" class="img-fluid rounded-start" alt="...">
-              </div>
-              
-              <div class="col-md-8">
-                <div class="card-body">
-                  <h5 class="card-title"><?php echo $Doctor->doc_name; ?></h5>
-                  <p class="card-text"><?php echo $Doctor->doc_bio; ?></p>
+ <table class="table datatable">
+                <thead>
+                  <tr>
+                    <th>Profile</th>
+                    <th><b>N</b>ame</th>
+                    <th>Role</th>
+                    <th>Number</th>
+                    <th>Gender</th>
+                    
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
                   
-                </div>
-              </div>
-
-              <div class="btn-group mt-2" role="group" aria-label="Basic mixed styles example">
-                <a href="edit?id=<?php echo $Doctor->id; ?>" class="btn btn-success">Edit</a> 
-                <a href="?delete_id=<?php echo $Doctor->id; ?>&name=<?php echo $Doctor->doc_name;  ?>" class="btn btn-danger">Delete</a>
-              </div>
-
-                        </div>
-          </div>
-        </div>
-       <?php } 
+        <?php
+        foreach($staff as $staff){
+        ?>
+                          <tr>
+                    <th> <img src="<?php if(!empty($staff->staff_profile)){ ?>uploads/profile/<?php echo $staff->staff_profile; } else { ?> ../assets/uploads/default_user.png <?php } ?>" class="img-fluid rounded-start" width="50" alt="..."></th>
+                    <th><b><?php if(!empty($staff->staff_name)){ echo $staff->staff_name; }?></b></th>
+                    <th><?php if(!empty($staff->role)){ echo $staff->role; }?></th>
+                    <th><?php if(!empty($staff->staff_number)){ echo $staff->staff_number; }?></th>
+                    <th><?php if(!empty($staff->staff_gender)){ echo $staff->staff_gender; }?></th>
+                    <th><a href="edit?id=<?php echo $staff->id; ?>" class="btn btn-success"><i class="bi bi-pencil-square"></i></a> 
+                <a href="?delete_id=<?php echo $staff->id; ?>&name=<?php echo $staff->staff_name;  ?>" class="btn btn-danger"><i class="bi bi-trash"></i></a>  </th>
+                  </tr>
+        <?php
+       }
+       ?>
+     
+       
+        </tbody>
+              </table>
+       <?php
     } ?>
     </div>
 </main>
-
 
 <?php
 if(isset($_GET['delete_id'])){
@@ -83,14 +92,13 @@ if(isset($_GET['delete_id'])){
 }
 ?>
 
-
+<script src="../assets/vendors/simple-datatables/simple-datatables.js"></script>
     <?php
-
     include '../assets/layouts/footer.php'
+    ?> 
 
-    ?>
 
-  <script type="text/javascript">
+<script type="text/javascript">
     $(window).on('load', function() {
         $('#basicModal').modal('show');
     });

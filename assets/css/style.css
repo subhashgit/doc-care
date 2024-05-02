@@ -679,7 +679,7 @@ h6 {
   margin: 10px 0 5px 15px;
 }
 
-.sidebar-nav .nav-link {
+.sidebar-nav .nav-link, .sidebar-nav .nav-link.active, .sidebar-nav .nav-link.collapsed.active {
   display: flex;
   align-items: center;
   font-size: 15px;
@@ -1231,3 +1231,5 @@ h6 {
   font-size: 13px;
   color: #012970;
 }
+
+.modal {background: rgba(0,0,0,.6);}

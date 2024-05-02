@@ -3,7 +3,7 @@ session_start();
 require '../../assets/includes/security_functions.php';
 require '../../assets/includes/auth_functions.php';
 check_verified();
-if (isset($_POST['add-doctor'])) {
+if (isset($_POST['add-staff'])) {
 
       // foreach($_POST as $key => $value){
 
@@ -22,15 +22,8 @@ if (isset($_POST['add-doctor'])) {
         $full_name = mysqli_real_escape_string($conn, $_POST['full_name']);
         $number = mysqli_real_escape_string($conn, $_POST['number']);
         $bio = mysqli_real_escape_string($conn, $_POST['bio']);
-        date_default_timezone_set("Asia/Calcutta");   //India time (GMT+5:30)
-        $created_at = date('Y-m-d H:i:s');
-        if(is_array($_POST["specialist"])) {
-            $specialist = implode(",", $_POST["specialist"]);
-        }
-        else
-        {
-            $specialist = $_POST["specialist"];
-        }
+       $role =  mysqli_real_escape_string($conn, $_POST["role"]);
+        
 
     if(isset($_POST['gender']))
     {
@@ -39,12 +32,7 @@ if (isset($_POST['add-doctor'])) {
     else{
         $gender = null;
     }    
-    if(isset($_POST['doc_id'])){
-        $docid = $_POST['doc_id'];
-    }
-    else{
-        $docid = 0;
-    }
+
     if (empty($full_name) || empty($number) ) {
         $_SESSION['ERRORS']['editstatus'] = 'required fields cannot be empty, try again';
     
@@ -153,8 +141,8 @@ if (isset($_POST['add-doctor'])) {
         }
 
      
-        $sql = "INSERT INTO doctors  (parent, doc_name, doc_number, doc_profile,  doc_document, doc_gender, doc_bio, specialist, created_at)
-        VALUES ('$id', '$full_name', '$number','$FileNameNew',   '$certifyNameNew' , '$gender', '$bio', '$specialist', '$created_at')";
+        $sql = "INSERT INTO staff  (parent, staff_name, staff_number, staff_profile,  staff_document, staff_gender, staff_bio, role)
+        VALUES ('$id', '$full_name', '$number','$FileNameNew',   '$certifyNameNew' , '$gender', '$bio', '$role')";
        
            if ($conn->query($sql) === TRUE) {
             $_SESSION['STATUS']['editstatus'] = 'Profile Updated Successfully';

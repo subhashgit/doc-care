@@ -1,24 +1,28 @@
 <?php
 check_verified();
-$sqlq = "SELECT * FROM doctors WHERE parent = ".$_SESSION['id']; 
-if ($result = mysqli_query($conn, $sqlq))
+/**Doctors */
+
+$sqlDoc = "SELECT * FROM doctors WHERE parent = ".$_SESSION['id']." ORDER BY id DESC"; 
+if ($resultDoc = mysqli_query($conn, $sqlDoc))
 {
-    $resultArray = array();
-    $tempArray = array();
+    $resultArrayDoc = array();
+    $tempArrayDoc = array();
 
     // Loop through each row in the result set
-    while($row = $result->fetch_object())
+    while($rowDoc = $resultDoc->fetch_object())
     {
         // Add each row into our results array
-        $tempArray = $row;
-        array_push($resultArray, $tempArray);
+        $tempArrayDoc = $rowDoc;
+        array_push($resultArrayDoc, $tempArrayDoc);
     }
 
     // Finally, encode the array to JSON and output the results
   
 }
-$doctors = $resultArray;
-
-function doctor_profile($docdata){
-    print_r($docdata);
+if(!empty($resultArrayDoc)){
+$Doctors = $resultArrayDoc;
 }
+else{
+    $Doctors = '';
+}
+

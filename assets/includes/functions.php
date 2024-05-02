@@ -24,31 +24,7 @@ $user = $resultArray[0];
 else{
     $user = '';
 }
-/**Doctors */
 
-$sqlDoc = "SELECT * FROM doctors WHERE parent = ".$_SESSION['id']." ORDER BY id DESC"; 
-if ($resultDoc = mysqli_query($conn, $sqlDoc))
-{
-    $resultArrayDoc = array();
-    $tempArrayDoc = array();
-
-    // Loop through each row in the result set
-    while($rowDoc = $resultDoc->fetch_object())
-    {
-        // Add each row into our results array
-        $tempArrayDoc = $rowDoc;
-        array_push($resultArrayDoc, $tempArrayDoc);
-    }
-
-    // Finally, encode the array to JSON and output the results
-  
-}
-if(!empty($resultArrayDoc)){
-$Doctors = $resultArrayDoc;
-}
-else{
-    $Doctors = '';
-}
 /** Availability */
 
 $sqlavail = "SELECT * FROM availability WHERE parent = ".$_SESSION['id']; 
@@ -119,15 +95,31 @@ if ($resultspc = mysqli_query($conn, $sqlspc))
 
 /**Specific Doc */
 function specificdoctor($docid){
-
     require '../assets/setup/db.inc.php';
-    
     $sqlDoc = "SELECT * FROM doctors WHERE parent = '".$_SESSION['id']."' AND id= ".$docid; 
         if ($resultDoc = mysqli_query($conn, $sqlDoc))
         {
             $doc_specific  = $resultDoc->fetch_object();
              return $doc_specific;
-        
         }
+}
 
+
+function specificstaff($Staffid){
+    require '../assets/setup/db.inc.php';
+    $sqlStaff = "SELECT * FROM staff WHERE parent = '".$_SESSION['id']."' AND id= ".$Staffid; 
+        if ($resultStaff = mysqli_query($conn, $sqlStaff))
+        {
+            $Staff_specific  = $resultStaff->fetch_object();
+             return $Staff_specific;
+        }
+}
+function specificpatient($patientid){
+    require '../assets/setup/db.inc.php';
+    $sqlpatient = "SELECT * FROM patient WHERE parent = '".$_SESSION['id']."' AND id= ".$patientid; 
+        if ($resultpatient = mysqli_query($conn, $sqlpatient))
+        {
+            $patient_specific  = $resultpatient->fetch_object();
+             return $patient_specific;
+        }
 }
